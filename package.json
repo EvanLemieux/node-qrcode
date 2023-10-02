@@ -27,7 +27,7 @@
   "homepage": "http://github.com/soldair/node-qrcode",
   "license": "MIT",
   "scripts": {
-    "lint": "standard",
+    "lint": "eslint --ext .js .",
     "pretest": "npm run lint",
     "test": "node --throw-deprecation test.js",
     "build": "rollup -c",
@@ -39,9 +39,7 @@
   },
   "dependencies": {
     "dijkstrajs": "^1.0.1",
-    "encode-utf8": "^1.0.3",
-    "pngjs": "^5.0.0",
-    "yargs": "^15.3.1"
+    "encode-utf8": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -52,13 +50,14 @@
     "canvas": "^2.8.0",
     "canvasutil": "0.0.4",
     "colors": "^1.4.0",
+    "eslint": "^7.18.0",
+    "eslint-config-brightspace": "^0.25.0",
     "express": "^4.17.1",
     "htmlparser2": "^4.1.0",
     "rollup": "^2.6.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-terser": "^5.3.0",
     "sinon": "^9.0.2",
-    "standard": "^16.0.4",
     "tap": "^16.2.0"
   },
   "repository": {
