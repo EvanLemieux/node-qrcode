@@ -14,15 +14,8 @@
     "qrcode"
   ],
   "main": "./lib/index.js",
-  "browser": {
-    "./lib/index.js": "./lib/browser.js",
-    "fs": false
-  },
   "files": [
-    "bin",
-    "build",
-    "lib",
-    "helper"
+    "lib"
   ],
   "homepage": "http://github.com/soldair/node-qrcode",
   "license": "MIT",
@@ -33,9 +26,6 @@
     "build": "rollup -c",
     "prepublish": "npm run build",
     "browser": "node examples/clientsideserver.js"
-  },
-  "bin": {
-    "qrcode": "./bin/qrcode"
   },
   "dependencies": {
     "dijkstrajs": "^1.0.1",
@@ -66,12 +56,5 @@
   },
   "engines": {
     "node": ">=10.13.0"
-  },
-  "standard": {
-    "ignore": [
-      "build/",
-      "examples/vendors/",
-      "lib/core/regex.js"
-    ]
   }
 }
