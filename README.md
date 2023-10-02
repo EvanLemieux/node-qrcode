@@ -44,123 +44,13 @@ npm install -g qrcode
 ```
 
 ## Usage
-### CLI
-
-```
-Usage: qrcode [options] <input string>
-
-QR Code options:
-  -v, --qversion  QR Code symbol version (1 - 40)                       [number]
-  -e, --error     Error correction level           [choices: "L", "M", "Q", "H"]
-  -m, --mask      Mask pattern (0 - 7)                                  [number]
-
-Renderer options:
-  -t, --type        Output type                  [choices: "png", "svg", "utf8"]
-  -w, --width       Image width (px)                                    [number]
-  -s, --scale       Scale factor                                        [number]
-  -q, --qzone       Quiet zone size                                     [number]
-  -l, --lightcolor  Light RGBA hex color
-  -d, --darkcolor   Dark RGBA hex color
-  --small  Output smaller QR code to terminal                          [boolean]
-
-Options:
-  -o, --output  Output file
-  -h, --help    Show help                                              [boolean]
-  --version     Show version number                                    [boolean]
-
-Examples:
-  qrcode "some text"                    Draw in terminal window
-  qrcode -o out.png "some text"         Save as png image
-  qrcode -d F00 -o out.png "some text"  Use red as foreground color
-```
-If not specified, output type is guessed from file extension.<br>
-Recognized extensions are `png`, `svg` and `txt`.
-
-### Browser
-`node-qrcode` can be used in browser through module bundlers like [Browserify](https://github.com/substack/node-browserify) and [Webpack](https://github.com/webpack/webpack) or by including the precompiled bundle present in `build/` folder.
-
-#### Module bundlers
-```html
-<!-- index.html -->
-<html>
-  <body>
-    <canvas id="canvas"></canvas>
-    <script src="bundle.js"></script>
-  </body>
-</html>
-```
-
 ```javascript
-// index.js -> bundle.js
-var QRCode = require('qrcode')
-var canvas = document.getElementById('canvas')
+import toCanvas from 'qrcode';
 
-QRCode.toCanvas(canvas, 'sample text', function (error) {
-  if (error) console.error(error)
+toCanvas(canvas, 'qr-value-to-be-encoded', { options }, function (error) {
+  if (error) console.error(error);
   console.log('success!');
-})
-```
-
-#### Precompiled bundle
-```html
-<canvas id="canvas"></canvas>
-
-<script src="/build/qrcode.js"></script>
-<script>
-  QRCode.toCanvas(document.getElementById('canvas'), 'sample text', function (error) {
-    if (error) console.error(error)
-    console.log('success!');
-  })
-</script>
-```
-
-If you install through `npm`, precompiled files will be available in `node_modules/qrcode/build/` folder.
-
-The precompiled bundle have support for [Internet Explorer 10+, Safari 5.1+, and all evergreen browsers](https://browserl.ist/?q=defaults%2C+IE+%3E%3D+10%2C+Safari+%3E%3D+5.1).
-
-### NodeJS
-Require the module `qrcode`
-
-```javascript
-var QRCode = require('qrcode')
-
-QRCode.toDataURL('I am a pony!', function (err, url) {
-  console.log(url)
-})
-```
-
-render a qrcode for the terminal
-```js
-var QRCode = require('qrcode')
-
-QRCode.toString('I am a pony!',{type:'terminal'}, function (err, url) {
-  console.log(url)
-})
-```
-
-### ES6/ES7
-Promises and Async/Await can be used in place of callback function.
-
-```javascript
-import QRCode from 'qrcode'
-
-// With promises
-QRCode.toDataURL('I am a pony!')
-  .then(url => {
-    console.log(url)
-  })
-  .catch(err => {
-    console.error(err)
-  })
-
-// With async/await
-const generateQR = async text => {
-  try {
-    console.log(await QRCode.toDataURL(text))
-  } catch (err) {
-    console.error(err)
-  }
-}
+});
 ```
 
 ## Error correction level
@@ -186,7 +76,7 @@ Error level can be set through `options.errorCorrectionLevel` property.<br>
 If not specified, the default value is `M`.
 
 ```javascript
-QRCode.toDataURL('some text', { errorCorrectionLevel: 'H' }, function (err, url) {
+toDataURL('some text', { errorCorrectionLevel: 'H' }, function (err, url) {
   console.log(url)
 })
 ```
@@ -214,7 +104,7 @@ QR Code version can be set through `options.version` property.<br>
 If no version is specified, the more suitable value will be used. Unless a specific version is required, this option is not needed.
 
 ```javascript
-QRCode.toDataURL('some text', { version: 2 }, function (err, url) {
+toDataURL('some text', { version: 2 }, function (err, url) {
   console.log(url)
 })
 ```
@@ -262,15 +152,15 @@ In this way no segment optimizations will be applied under the hood.<br>
 Segments list can be passed as an array of object:
 
 ```javascript
-  var QRCode = require('qrcode')
+  import { toDataUrl } from 'qrcode';
 
   var segs = [
     { data: 'ABCDEFG', mode: 'alphanumeric' },
     { data: '0123456', mode: 'numeric' }
-  ]
+  ];
 
-  QRCode.toDataURL(segs, function (err, url) {
-    console.log(url)
+  toDataURL(segs, function (err, url) {
+    console.log(url);
   })
 ```
 
@@ -286,71 +176,13 @@ An helper method is provided by the lib through an optional file that you can in
 **Note:** Support for Kanji mode is only needed if you want to benefit of the data compression, otherwise is still possible to encode kanji using Byte mode (See [Multibyte characters](#multibyte-characters)).
 
 ```javascript
-  var QRCode = require('qrcode')
-  var toSJIS = require('qrcode/helper/to-sjis')
+  import { toDataUrl } from 'qrcode';
+  import { toSJIS } from 'qrcode/helper/to-sjis';
 
-  QRCode.toDataURL(kanjiString, { toSJISFunc: toSJIS }, function (err, url) {
-    console.log(url)
+  toDataURL(kanjiString, { toSJISFunc: toSJIS }, function (err, url) {
+    console.log(url);
   })
 ```
-
-With precompiled bundle:
-
-```html
-<canvas id="canvas"></canvas>
-
-<script src="/build/qrcode.min.js"></script>
-<script src="/build/qrcode.tosjis.min.js"></script>
-<script>
-  QRCode.toCanvas(document.getElementById('canvas'),
-    'sample text', { toSJISFunc: QRCode.toSJIS }, function (error) {
-    if (error) console.error(error)
-    console.log('success!')
-  })
-</script>
-```
-
-## Binary data
-QR Codes can hold arbitrary byte-based binary data. If you attempt to create a binary QR Code by first converting the data to a JavaScript string, it will fail to encode propery because string encoding adds additional bytes. Instead, you must pass a [`Uint8ClampedArray`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray) or compatible array, or a Node [Buffer](https://nodejs.org/api/buffer.html), as follows:
-
-```javascript
-// Regular array example
-// WARNING: Element values will be clamped to 0-255 even if your data contains higher values.
-const QRCode = require('qrcode')
-QRCode.toFile(
-  'foo.png',
-  [{ data: [253,254,255], mode: 'byte' }],
-  ...options...,
-  ...callback...
-)
-```
-
-```javascript
-// Uint8ClampedArray example
-const QRCode = require('qrcode')
-
-QRCode.toFile(
-  'foo.png',
-  [{ data: new Uint8ClampedArray([253,254,255]), mode: 'byte' }],
-  ...options...,
-  ...callback...
-)
-```
-
-```javascript
-// Node Buffer example
-// WARNING: Element values will be clamped to 0-255 even if your data contains higher values.
-const QRCode = require('qrcode')
-
-QRCode.toFile(
-  'foo.png',
-  [{ data: Buffer.from([253,254,255]), mode: 'byte' }],
-  ...options...,
-  ...callback...
-)
-```
-
-TypeScript users: if you are using [@types/qrcode](https://www.npmjs.com/package/@types/qrcode), you will need to add a `// @ts-ignore` above the data segment because it expects `data: string`.
 
 ## Multibyte characters
 Support for multibyte characters isn't present in the initial QR Code standard, but is possible to encode UTF-8 characters in Byte mode.
@@ -367,14 +199,6 @@ Browser:
 - [toCanvas()](#tocanvascanvaselement-text-options-cberror)
 - [toDataURL()](#todataurltext-options-cberror-url)
 - [toString()](#tostringtext-options-cberror-string)
-
-Server:
-- [create()](#createtext-options)
-- [toCanvas()](#tocanvascanvas-text-options-cberror)
-- [toDataURL()](#todataurltext-options-cberror-url-1)
-- [toString()](#tostringtext-options-cberror-string-1)
-- [toFile()](#tofilepath-text-options-cberror)
-- [toFileStream()](#tofilestreamstream-text-options)
 
 ### Browser API
 #### `create(text, [options])`
@@ -529,159 +353,6 @@ QRCode.toString('http://www.google.com', function (err, string) {
   console.log(string)
 })
 ```
-
-<br>
-
-
-### Server API
-#### `create(text, [options])`
-See [create](#createtext-options).
-
-<br>
-
-#### `toCanvas(canvas, text, [options], [cb(error)])`
-Draws qr code symbol to [node canvas](https://github.com/Automattic/node-canvas).
-
-##### `text`
-Type: `String|Array`
-
-Text to encode or a list of objects describing segments.
-
-##### `options`
-See [Options](#options).
-
-##### `cb`
-Type: `Function`
-
-Callback function called on finish.
-
-<br>
-
-#### `toDataURL(text, [options], [cb(error, url)])`
-Returns a Data URI containing a representation of the QR Code image.<br>
-Only works with `image/png` type for now.
-
-##### `text`
-Type: `String|Array`
-
-Text to encode or a list of objects describing segments.
-
-##### `options`
-See [Options](#options) for other settings.
-
-##### `cb`
-Type: `Function`
-
-Callback function called on finish.
-
-<br>
-
-#### `toString(text, [options], [cb(error, string)])`
-Returns a string representation of the QR Code.<br>
-If choosen output format is `svg` it will returns a string containing xml code.
-
-##### `text`
-Type: `String|Array`
-
-Text to encode or a list of objects describing segments.
-
-##### `options`
-- ###### `type`
-  Type: `String`<br>
-  Default: `utf8`
-
-  Output format.<br>
-  Possible values are: `utf8`, `svg`, `terminal`.
-
-See [Options](#options) for other settings.
-
-##### `cb`
-Type: `Function`
-
-Callback function called on finish.
-
-##### Example
-```javascript
-QRCode.toString('http://www.google.com', function (err, string) {
-  if (err) throw err
-  console.log(string)
-})
-```
-
-<br>
-
-#### `toFile(path, text, [options], [cb(error)])`
-Saves QR Code to image file.<br>
-If `options.type` is not specified, the format will be guessed from file extension.<br>
-Recognized extensions are `png`, `svg`, `txt`.
-
-##### `path`
-Type: `String`
-
-Path where to save the file.
-
-##### `text`
-Type: `String|Array`
-
-Text to encode or a list of objects describing segments.
-
-##### `options`
-- ###### `type`
-  Type: `String`<br>
-  Default: `png`
-
-  Output format.<br>
-  Possible values are: `png`, `svg`, `utf8`.
-
-- ###### `rendererOpts.deflateLevel` **(png only)**
-  Type: `Number`<br>
-  Default: `9`
-
-  Compression level for deflate.
-
-- ###### `rendererOpts.deflateStrategy` **(png only)**
-  Type: `Number`<br>
-  Default: `3`
-
-  Compression strategy for deflate.
-
-See [Options](#options) for other settings.
-
-##### `cb`
-Type: `Function`
-
-Callback function called on finish.
-
-##### Example
-```javascript
-QRCode.toFile('path/to/filename.png', 'Some text', {
-  color: {
-    dark: '#00F',  // Blue dots
-    light: '#0000' // Transparent background
-  }
-}, function (err) {
-  if (err) throw err
-  console.log('done')
-})
-```
-
-<br>
-
-#### `toFileStream(stream, text, [options])`
-Writes QR Code image to stream. Only works with `png` format for now.
-
-##### `stream`
-Type: `stream.Writable`
-
-Node stream.
-
-##### `text`
-Type: `String|Array`
-
-Text to encode or a list of objects describing segments.
-
-##### `options`
-See [Options](#options).
 
 <br>
 
